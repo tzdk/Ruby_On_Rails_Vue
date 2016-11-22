@@ -1,0 +1,19 @@
+<h1>Listing employees</h1>
+ 
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Gender</th>
+    <th>Age</th>
+    <th>Telephone</th>
+  </tr>
+ 
+  <% @employees.each do |employee| %>
+    <tr>
+      <td><%= employee.name %></td>
+      <td><%= employee.gender %></td>
+      <td><%= employee.age %></td>
+      <td><%= employee.telephone %></td>
+    </tr>
+  <% end %>
+</table>
