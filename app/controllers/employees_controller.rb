@@ -1,5 +1,5 @@
 class EmployeesController < ApplicationController
-
+  before_action :logged_in_user, only: [:update, :destroy]
   def index
     #@employees = Employee.all
     json_str = Employee.all.to_json   
