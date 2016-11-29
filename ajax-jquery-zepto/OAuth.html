@@ -2,6 +2,8 @@
 <html>
 	<head>
 		<meta charset="UTF-8">
+		<meta name="csrf-param" content="authenticity_token"/>
+    <meta name="csrf-token" content="/bZVwvomkAnwAI1Qd37lFeewvpOIiackk9121fFwWwc="/>
 		<title></title>
 		<link rel="stylesheet" href="style.css" />
 	</head>
@@ -35,6 +37,7 @@
 	</body>
 	<script src="js/vue.js"></script>
 	<script src="js/zepto.js"></script>
+	<script src="js/ajax-helper.js"></script>
 	<script>
 		var demo = new Vue({
 			el: '#app',
@@ -71,6 +74,7 @@
 							vm.userName = data.name
 							sessionStorage.setItem('accessToken', data.access_token)
 							sessionStorage.setItem('userName', vm.userName)
+							window.location.href='ajax-cors-delete.html';
 						},
 						error: vm.requestError
 					})
@@ -79,7 +83,6 @@
 					var vm = this
 					vm.msg = ''
 					vm.result = ''
-
 					$.ajax({
 						url: vm.logoutUrl,
 						type: 'DELETE',

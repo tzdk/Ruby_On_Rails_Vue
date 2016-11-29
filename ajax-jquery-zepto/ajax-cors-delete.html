@@ -15,7 +15,8 @@
 			<div class="container">
 			  <div id="searchBar">
 				  Search <input type="text" v-model="searchQuery" />
-			  </div>
+            <span v-if="userName">{{ userName }} | <a href="#" @click="logout">注销</a></span>
+        </div>
 			  <br/>
 				<simple-grid :data-list="gridData" :columns="gridColumns" :filter-key="searchQuery"
 					v-on:load-entry="loadCustomer" 
@@ -159,10 +160,12 @@
 					}],
 					gridData: [],
 					apiUrl: 'http://localhost:3000/employees',
+					userName:'',
 					item: {}
 				},
 				ready: function() {
-					this.getCustomers()
+					this.getCustomers(),
+					this.userName=sessionStorage["userName"]
 				},
 				methods: {
 					closeDialog: function() {
@@ -202,16 +205,26 @@
 						this.show = false
 					},
 					updateCustomer: function() {
+				    if(!sessionStorage["userName"]){
+				      alert('Please login.');
+				      return;
+				    }
 						// 定义vm变量，让它指向this,this是当前的Vue实例
 						var vm = this,
+						
 							callback = function(data) {
 								// 更新成功后，重新加载页面数据
 								vm.getCustomers()
 							}
 							// 将vm.item直接PUT到服务端
+						vm.item.userName = sessionStorage["userName"]
 						ajaxHelper.put(vm.apiUrl + '/' + vm.item.id, vm.item, callback)
 					},
 					deleteCustomer: function(customer) {
+				    if(!sessionStorage["userName"]){
+				      alert('Please login.');
+				      return;
+				    }
 						// 定义vm变量，让它指向this,this是当前的Vue实例
 						var vm = this,
 							callback = function(data) {
@@ -219,8 +232,23 @@
 								vm.getCustomers()
 							}
 						// 发送DELETE请求到服务端
-						ajaxHelper.delete(vm.apiUrl + '/' + customer.id, null, callback)
-					}
+						ajaxHelper.delete(vm.apiUrl + '/' + customer.id, {userName:sessionStorage["userName"]}, callback)
+					},
+				  logout: function() {
+					  var vm = this
+					  vm.msg = ''
+					  vm.result = ''
+
+					  $.ajax({
+						  url: 'http://localhost:3000/logout',
+						  type: 'DELETE',
+						  dataType: 'json',
+						  success: function(data) {
+							  vm.userName = ''
+							  sessionStorage.removeItem('userName')
+						  }
+					  })
+				  }
 				}
 			})
 			demo.$watch('show', function(newVal, oldVal) {
